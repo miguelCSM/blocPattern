@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:formvalidation/src/models/product_model.dart';
-import 'package:formvalidation/src/utils/utils.dart' as utils; 
+import 'package:formvalidation/src/providers/productos_provider.dart';
+import 'package:formvalidation/src/utils/utils.dart' as utils;
 
 class ProductPage extends StatefulWidget {
   ProductPage({Key key}) : super(key: key);
@@ -11,10 +12,8 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final formKey = GlobalKey<FormState>();
-
+  final productoProvider = new ProductosProvider();
   final producto = new ProductModel();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +23,12 @@ class _ProductPageState extends State<ProductPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.time_to_leave),
-            onPressed: (){},
-            ),
-            IconButton(
+            onPressed: () {},
+          ),
+          IconButton(
             icon: Icon(Icons.camera_alt),
-            onPressed: (){},
-            ),
-          
+            onPressed: () {},
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -55,59 +53,68 @@ class _ProductPageState extends State<ProductPage> {
     return TextFormField(
       textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(labelText: 'Producto'),
-      validator: (value){
-        if(value.length<3){
+      onSaved: (value) => producto.titulo,
+      validator: (value) {
+        if (value.length < 3) {
           return 'Ingrese un nombre mas grande';
-        }
-        else{
+        } else {
           return null;
         }
-      }
+      },
+      initialValue: producto.titulo,
     );
   }
 
   Widget _crearPrecio() {
-        return TextFormField(
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-      decoration: InputDecoration(labelText: 'precio'),
-      validator: (value){
-        if (utils.isNumeric(value)){
-          return null;
-        }
-        else{
-          return 'solo números';
-        }
-      }
-    );
+    return TextFormField(
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        decoration: InputDecoration(labelText: 'precio'),
+        onSaved: (value)=>producto.valor = double.parse(value),
+        validator: (value) {
+          if (utils.isNumeric(value)) {
+            return null;
+          } else {
+            return 'solo números';
+          }
+        },
+        initialValue: producto.valor.toString(),);
   }
 
   Widget _crearDisponible() {
     return SwitchListTile(
-      value:true,
+      value: producto.disponible,
       title: Text('Disponible'),
       activeColor: Colors.deepPurple,
+      onChanged: (value)=>setState((){
+        producto.disponible = value;
+      }),
     );
   }
 
   Widget _crearBoton() {
     return RaisedButton.icon(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
       color: Colors.deepPurple,
       textColor: Colors.white,
       label: Text('Guardar'),
-      icon : Icon(Icons.save),
+      icon: Icon(Icons.save),
       onPressed: _submit,
     );
   }
-  void _submit(){
+
+  void _submit() {
     // Preguntar los estados validados
-    if(formKey.currentState.validate()) return; 
+    if (formKey.currentState.validate()) return;
 
     formKey.currentState.save();
-
     print('Todo fine');
 
+    print(producto.titulo);
+    print(producto.valor);
+    print(producto.disponible);
 
+    //productoProvide.crearProducto()
   }
 }

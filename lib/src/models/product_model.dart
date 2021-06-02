@@ -10,8 +10,8 @@ String productModelToJson(ProductModel data) => json.encode(data.toJson());
 class ProductModel {
     ProductModel({
         this.id,
-        this.titulo = '',
-        this.valor = 0.0,
+        this.titulo = 'palomitas',
+        this.valor = 100.0,
         this.disponible= true,
     });
 
