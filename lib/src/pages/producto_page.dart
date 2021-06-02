@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:formvalidation/src/models/product_model.dart';
+import 'package:formvalidation/src/utils/utils.dart' as utils; 
 
 class ProductPage extends StatefulWidget {
   ProductPage({Key key}) : super(key: key);
@@ -8,6 +10,12 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  final formKey = GlobalKey<FormState>();
+
+  final producto = new ProductModel();
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,9 +30,84 @@ class _ProductPageState extends State<ProductPage> {
             icon: Icon(Icons.camera_alt),
             onPressed: (){},
             ),
-
+          
         ],
       ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(15.0),
+          child: Form(
+            child: Column(
+              children: <Widget>[
+                _crearNombre(),
+                _crearPrecio(),
+                _crearDisponible(),
+                _crearBoton()
+              ],
+            ),
+          ),
+        ),
+      ),
     );
+  }
+
+  Widget _crearNombre() {
+    return TextFormField(
+      textCapitalization: TextCapitalization.sentences,
+      decoration: InputDecoration(labelText: 'Producto'),
+      validator: (value){
+        if(value.length<3){
+          return 'Ingrese un nombre mas grande';
+        }
+        else{
+          return null;
+        }
+      }
+    );
+  }
+
+  Widget _crearPrecio() {
+        return TextFormField(
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+      decoration: InputDecoration(labelText: 'precio'),
+      validator: (value){
+        if (utils.isNumeric(value)){
+          return null;
+        }
+        else{
+          return 'solo números';
+        }
+      }
+    );
+  }
+
+  Widget _crearDisponible() {
+    return SwitchListTile(
+      value:true,
+      title: Text('Disponible'),
+      activeColor: Colors.deepPurple,
+    );
+  }
+
+  Widget _crearBoton() {
+    return RaisedButton.icon(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),),
+      color: Colors.deepPurple,
+      textColor: Colors.white,
+      label: Text('Guardar'),
+      icon : Icon(Icons.save),
+      onPressed: _submit,
+    );
+  }
+  void _submit(){
+    // Preguntar los estados validados
+    if(formKey.currentState.validate()) return; 
+
+    formKey.currentState.save();
+
+    print('Todo fine');
+
+
   }
 }
