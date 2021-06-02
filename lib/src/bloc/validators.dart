@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 
 class Validators{
@@ -14,6 +12,16 @@ class Validators{
       }
       else{
         sink.addError('email incorrecto');
+      }
+    }
+  );
+  final validarPassword = StreamTransformer<String,String>.fromHandlers(
+    handleData: (password,sink){
+      if (password.length>=6){
+        sink.add(password);
+      }
+      else{
+        sink.addError('Necesita un contraseña');
       }
     }
   );
